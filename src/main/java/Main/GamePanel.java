@@ -16,9 +16,9 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     public final static int SCALE = 2;
 
     private Thread thread;
-    private int FPS = 60;
+    private final int FPS = 60;
     private boolean isRunning;
-    private long targetTime = 1000 / FPS;
+    private final long targetTime = 1000 / FPS;
 
     private BufferedImage image;
     private Graphics2D g;
@@ -26,7 +26,8 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
     GamePanel() {
         super();
-        gsm = new GameStateManager();
+
+        init();
     }
 
     public void runGame() {
@@ -39,10 +40,12 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
     public void init() {
         setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
+
         image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-//        g = (Graphics2D) g;
+        g = (Graphics2D) image.getGraphics();
 
         gsm = new GameStateManager();
+
         runGame();
     }
 
@@ -52,7 +55,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
 
     public void drawToScreen() {
         Graphics g2 = getGraphics();
-        g2.drawImage(image, 0, 0, null);
+        g2.drawImage(image, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
         g2.dispose();
     }
 
@@ -61,8 +64,6 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
     }
 
     public void run() {
-        init();
-
         long start;
         long elapsed;
         long wait;
@@ -85,12 +86,10 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         }
     }
 
-    @Override
     public void keyPressed(KeyEvent e) {
         gsm.keyPressed(e.getKeyCode());
     }
 
-    @Override
     public void keyReleased(KeyEvent e) {
         gsm.keyReleased(e.getKeyCode());
     }
@@ -101,6 +100,7 @@ public class GamePanel extends JPanel implements Runnable, KeyListener {
         if (thread == null) {
             thread = new Thread(this);
             addKeyListener(this);
+            setFocusable(true);
             thread.start();
         }
     }

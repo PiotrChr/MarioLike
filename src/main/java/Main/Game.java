@@ -1,6 +1,4 @@
-package GameState;
-
-import Main.GameFrame;
+package Main;
 
 public class Game {
     public static final String gameTitle = "Mario Like";

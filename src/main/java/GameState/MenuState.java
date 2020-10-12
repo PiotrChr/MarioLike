@@ -1,14 +1,13 @@
 package GameState;
 
-import GameItems.Static.Menu.Quit;
-import GameItems.Static.Menu.Start;
-import GameItems.TileMap.Background;
+import GameItems.Static.Menu.Menu;
 import GameItems.Static.Menu.MenuItem;
-
+import GameItems.Static.Menu.*;
+import GameItems.TileMap.Background;
+import Main.Game;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 
 public class MenuState extends GameState {
 
@@ -21,8 +20,7 @@ public class MenuState extends GameState {
     private Color menuColor;
     private Color menuActiveColor;
 
-    private MenuItem currentOption;
-    private ArrayList<MenuItem> options;
+    private Menu menu;
 
     public MenuState(GameStateManager gsm) {
         super(gsm);
@@ -35,8 +33,8 @@ public class MenuState extends GameState {
 
     }
     public void init() {
-        bg = new Background("Background/menubg.gif", 1);
-        bg.setVector(-0.1, 0);
+        bg = new Background("/Backgrounds/menubg1.gif", 1);
+        bg.setVector(0.1, 0);
 
         titleColor = new Color(255, 255, 255);
         titleFont = new Font("Times Roman", Font.PLAIN, 12);
@@ -45,11 +43,7 @@ public class MenuState extends GameState {
         menuColor = new Color(255, 255, 255);
         menuActiveColor = new Color(255, 155, 50);
 
-        // Menu options
-        options = new ArrayList<>();
-        options.add(new Start(0));
-        options.add(new Quit(1));
-
+        menu = new Menu();
     }
 
     @Override
@@ -63,7 +57,6 @@ public class MenuState extends GameState {
 
         drawTitle(g);
         drawMenu(g);
-
     }
 
     public void drawTitle(Graphics2D g) {
@@ -75,8 +68,8 @@ public class MenuState extends GameState {
     public void drawMenu(Graphics2D g) {
         g.setFont(menuFont);
 
-        for (MenuItem item: options) {
-            if (item.isActive()) {
+        for (MenuItem item: menu.getMenu()) {
+            if (menu.isActive(item)) {
                 g.setColor(menuActiveColor);
             } else {
                 g.setColor(menuColor);
@@ -90,24 +83,50 @@ public class MenuState extends GameState {
         }
     }
 
-    public void selectOption() {
-        if (currentOption instanceof Start) {
-            // handle start
+    public void handleQuit() {
+        System.exit(0);
+    }
+
+    public void handleStart() {}
+
+    public void handleHelp() {}
+
+    public void handleAbout() {}
+
+    public void handleOption(MenuItem menuItem) {
+        if (menuItem instanceof Start) {
+            handleStart();
         }
 
-        if (currentOption instanceof Quit) {
-            // handle quit
+        if (menuItem instanceof Quit) {
+            handleQuit();
+        }
+
+        if (menuItem instanceof Help) {
+            handleHelp();
+        }
+
+        if (menuItem instanceof About) {
+            handleAbout();
         }
     }
 
     @Override
     public void keyPressed(int k) {
         if (k == KeyEvent.VK_ENTER) {
-            // confirm
+            handleOption(menu.getActiveItem());
         }
 
         if (k == KeyEvent.VK_ESCAPE) {
-            // back or quit
+            handleQuit();
+        }
+
+        if (k == KeyEvent.VK_UP) {
+            menu.activatePrevious();
+        }
+
+        if (k == KeyEvent.VK_DOWN) {
+            menu.activateNext();
         }
     }
 

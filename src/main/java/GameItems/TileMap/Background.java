@@ -1,12 +1,14 @@
 package GameItems.TileMap;
 
+import GameItems.GameResource;
 import Main.GamePanel;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.FileInputStream;
 
-public class Background {
+public class Background extends GameResource {
 
     private BufferedImage image;
 
@@ -18,9 +20,10 @@ public class Background {
     private double moveScale;
 
     public Background(String s, double ms) {
+
         try {
             image = ImageIO.read(
-                    getClass().getResourceAsStream(s)
+                    new FileInputStream(getFullPath(s))
             );
             moveScale = ms;
         } catch (Exception exception) {
